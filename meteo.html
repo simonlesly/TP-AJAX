@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prévisions météo </title>  
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Remplace les valeurs 'ville' et 'pays' par l'endroit où habite l'utilisateur
+    const ville = 'Paris';
+    const pays = 'France';
+
+    $(document).ready(function() {
+      // Récupère les données météo à partir de l'API de Prévision-meteo.ch
+      $.getJSON(`https://www.prevision-meteo.ch/services/json/${ville}`, function(data) {
+        // Affiche les prévisions pour les prochains jours
+        for (let i = 0; i < 7; i++) {
+          const jour = data['fcst_day_' + i].day_long; // Jour de la semaine
+          const image = data['fcst_day_' + i].icon_big; // Image correspondant aux conditions météorologiques
+          const tempMax = data['fcst_day_' + i].tmax; // Température maximale
+          const tempMin = data['fcst_day_' + i].tmin; // Température minimale
+
+          // Crée une card Bootstrap plus petite avec l'image, le jour de la semaine et les températures
+          const card = `
+            <div class="card" style="width: 18rem;">
+              <img src="${image}" class="card-img-top" alt="${jour}">
+              <div class="card-body">
+                <h5 class="card-title">${jour}</h5>
+                <p class="card-text">Température max: ${tempMax}°C</p>
+                <p class="card-text">Température min: ${tempMin}°C</p>
+              </div>
+            </div>
+          `;
+
+          // Ajoute la card à la page HTML
+          $('#cards-container').append(card);
+        }
+      }).fail(function() {
+        // Affiche un message d'erreur en cas d'échec de la récupération des données
+        $('#erreur').text("Une erreur est survenue lors de la récupération des prévisions météo.");
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Prévisions météo</h1>
+  <p id="erreur"></p>
+  <div id="cards-container" class="card-columns"></div>
+</body>
+</html>
+
+
+
+
+
+
